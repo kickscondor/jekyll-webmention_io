@@ -6,9 +6,6 @@
 #
 #  This generator gathers webmentions of your pages
 #
-
-require "uglifier"
-
 module Jekyll
   module WebmentionIO
     class JavaScriptFile < StaticFile
@@ -88,6 +85,7 @@ module Jekyll
         uglify_config = {
           :harmony => true,
         }
+        require "uglifier"
         @javascript = Uglifier.new(uglify_config).compile(@javascript)
       end
 
