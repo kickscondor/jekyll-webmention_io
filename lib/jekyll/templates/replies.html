@@ -17,7 +17,7 @@
             {% endif %}
             {% if webmention.pubdate and webmention.author %}on{% endif %}
             {% if webmention.pubdate %}
-              <a class="webmention__source u-url" href="{{ webmention.url }}">
+              <a class="webmention__source u-url" href="{{ webmention.uri }}">
                 <time class="webmention__pubdate dt-published" datetime="{{ webmention.pubdate | date: '%FT%T%:z' }}">{{ webmention.pubdate | date: '%d %B %Y' }}</time>
               </a>
             {% endif %}
