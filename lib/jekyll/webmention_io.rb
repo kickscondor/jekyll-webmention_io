@@ -222,7 +222,7 @@ module Jekyll
     def self.get_webmention_endpoint(uri)
       # log "info", "Looking for webmention endpoint at #{uri}"
       begin
-        endpoint = Webmention::Client.supports_webmention?(uri)
+        endpoint = ::Webmention::Client.supports_webmention?(uri)
         unless endpoint
           log "info", "Could not find a webmention endpoint at #{uri}"
         end
@@ -236,7 +236,7 @@ module Jekyll
     def self.webmention(source, target, endpoint)
       log "info", "Sending webmention of #{target} in #{source}"
       # return `curl -s -i -d \"source=#{source}&target=#{target}\" -o /dev/null #{endpoint}`
-      response = Webmention::Client.send_mention(endpoint, source, target, true)
+      response = ::Webmention::Client.send_mention(endpoint, source, target, true)
       status = response.dig("parsed_response", "data", "status").to_s
       if status == "200"
         log "info", "Webmention successful!"
