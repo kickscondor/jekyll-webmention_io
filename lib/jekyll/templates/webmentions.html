@@ -9,17 +9,20 @@
             {% unless webmention.author.photo %}webmention--no-photo{% endunless %}
             {% if webmention.source=='twitter' %}{% if webmention.type=='like' or webmention.type=='repost' %}webmention--author-starts{% endif %}{% endif %}
             ">
+            <div class="webmention__author p-author h-card">
             {% if webmention.author %}
-              <div class="webmention__author p-author h-card">
-                <a class="u-url" href="{{ webmention.author.url }}">
-                  {% if webmention.author.photo %}
-                    <img class="webmention__author__photo u-photo" src="{{ webmention.author.photo }}" alt="" title="{{ webmention.author.name }}">
-                  {% endif %}
-                  <b class="p-name">{{ webmention.author.name }}</b>
-                </a>
-              </div>
+              <a class="u-url" href="{{ webmention.author.url }}">
+                {% if webmention.author.photo %}
+                  <img class="webmention__author__photo u-photo" src="{{ webmention.author.photo }}" alt="" title="{{ webmention.author.name }}">
+                {% endif %}
+                <b class="p-name">{{ webmention.author.name }}</b>
+              </a>
+            {% elsif webmention.uri %}
+              <span class="p-name">{{ webmention.uri }}</span>
             {% endif %}
+            </div>
 
+            {% if webmention.content or webmention.title %}
             <div class="webmention__content p-content">
               {% if webmention.content %}
                 {{ webmention.content }}
@@ -27,6 +30,7 @@
                 {{ webmention.title }}
               {% endif %}
             </div>
+            {% endif %}
             
             <div class="webmention__meta">
               {% if webmention.pubdate %}
