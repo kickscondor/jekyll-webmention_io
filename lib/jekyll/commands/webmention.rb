@@ -40,13 +40,14 @@ module Jekyll
                 target = "http:#{target}"
               end
               endpoint = Jekyll::WebmentionIO.get_webmention_endpoint(target)
-              next unless endpoint
-              response = Jekyll::WebmentionIO.webmention(source, target, endpoint)
-              next unless response
-              begin
-                response = JSON.parse response
-              rescue JSON::ParserError
-                response = ""
+              response = nil
+              if endpoint
+                response = Jekyll::WebmentionIO.webmention(source, target, endpoint)
+                begin
+                  response = JSON.parse response
+                rescue JSON::ParserError
+                  response = ""
+                end
               end
               outgoing[source][target] = {'timestamp' => Time.now, 'response' => response}
               count += 1
