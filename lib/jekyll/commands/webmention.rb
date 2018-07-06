@@ -29,7 +29,7 @@ module Jekyll
               if response.is_a? Hash # Some docs have no date
                 timestamp = response['timestamp']
                 if timestamp && Jekyll::WebmentionIO.post_should_be_throttled?(target, post_timestamp, timestamp)
-                  Jekyll::WebmentionIO.log "info", "Throttling this post."
+                  Jekyll::WebmentionIO.log "info", "Throttling #{target}."
                 else
                   response = false
                 end
@@ -43,10 +43,8 @@ module Jekyll
               response = nil
               if endpoint
                 response = Jekyll::WebmentionIO.webmention(source, target, endpoint)
-                begin
-                  response = JSON.parse response
-                rescue JSON::ParserError
-                  response = ""
+                if response
+                  response = JSON.parse response rescue ""
                 end
               end
               outgoing[source][target] = {'timestamp' => Time.now, 'response' => response}
