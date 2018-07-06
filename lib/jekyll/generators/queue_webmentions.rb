@@ -44,6 +44,10 @@ module Jekyll
       posts.each do |post|
         uri = "#{base_uri}#{post.url}"
         mentions = get_mentioned_uris(post)
+        mtime = webmentions.dig(uri, 'timestamp')
+        if mtime and mtime < post.source_file_mtime
+          webmentions.delete(uri)
+        end
         if webmentions.key? uri
           mentions.each do |mentioned_uri, response|
             unless webmentions[uri].key? mentioned_uri
@@ -51,7 +55,7 @@ module Jekyll
             end
           end
         else
-          webmentions[uri] = mentions.merge('timestamp' => post.date)
+          webmentions[uri] = mentions.merge('timestamp' => post.source_file_mtime)
         end
       end
 
