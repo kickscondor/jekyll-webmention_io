@@ -23,7 +23,7 @@ module Jekyll
         if File.exist?(cached_outgoing)
           outgoing = open(cached_outgoing) { |f| YAML.load(f) }
           outgoing.each do |source, targets|
-            post_timestamp.targets.delete("timestamp")
+            post_timestamp = targets.delete("timestamp")
             targets.each do |target, response|
               # should we throttle?
               if response.is_a? Hash # Some docs have no date
