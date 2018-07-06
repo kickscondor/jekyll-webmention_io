@@ -18,7 +18,7 @@ module Jekyll
         if File.exist? "#{Jekyll::WebmentionIO.cache_folder}/#{Jekyll::WebmentionIO.file_prefix}sent.yml"
           Jekyll::WebmentionIO.log "error", "Your outgoing webmentions queue needs to be upgraded. Please re-build your project."
         end
-        count = 0
+        attempts, count = 0, 0
         cached_outgoing = Jekyll::WebmentionIO.get_cache_file_path "outgoing"
         if File.exist?(cached_outgoing)
           outgoing = open(cached_outgoing) { |f| YAML.load(f) }
@@ -28,7 +28,7 @@ module Jekyll
               # should we throttle?
               if response.is_a? Hash # Some docs have no date
                 timestamp = response['timestamp']
-                if timestamp && Jekyll::WebmentionIO.post_should_be_throttled?(target, post_timestamp, Date.parse(timestamp))
+                if timestamp && Jekyll::WebmentionIO.post_should_be_throttled?(target, post_timestamp, timestamp.to_date)
                   Jekyll::WebmentionIO.log "info", "Throttling #{target}."
                 else
                   response = false
@@ -45,17 +45,18 @@ module Jekyll
                 response = Jekyll::WebmentionIO.webmention(source, target, endpoint)
                 if response
                   response = JSON.parse response rescue ""
+                  count += 1
                 end
               end
-              outgoing[source][target] = {'timestamp' => Time.now.to_s, 'response' => response}
-              count += 1
+              outgoing[source][target] = {'timestamp' => Time.now, 'response' => response}
+              attempts += 1
             end
             targets['timestamp'] = post_timestamp
           end
           if count.positive?
             File.open(cached_outgoing, "w") { |f| YAML.dump(outgoing, f) }
           end
-          Jekyll::WebmentionIO.log "msg", "#{count} webmentions sent."
+          Jekyll::WebmentionIO.log "msg", "#{count} webmentions sent, #{attempts} attemped."
         end # file exists (outgoing)
       end # def process
     end # WebmentionCommand

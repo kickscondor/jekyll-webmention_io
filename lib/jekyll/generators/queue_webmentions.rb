@@ -51,7 +51,7 @@ module Jekyll
             end
           end
         else
-          webmentions[uri] = mentions.merge('timestamp' => post.date.to_s)
+          webmentions[uri] = mentions.merge('timestamp' => post.date)
         end
       end
 
