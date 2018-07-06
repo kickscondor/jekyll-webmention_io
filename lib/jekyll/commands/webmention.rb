@@ -31,7 +31,7 @@ module Jekyll
                 if timestamp && Jekyll::WebmentionIO.post_should_be_throttled?(target, post_timestamp, timestamp.to_date)
                   Jekyll::WebmentionIO.log "info", "Throttling #{target}."
                 else
-                  response = false
+                  response = response['response']
                 end
               end
               next unless response == false
