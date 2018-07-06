@@ -51,6 +51,7 @@ module Jekyll
               outgoing[source][target] = {'timestamp' => Time.now, 'response' => response}
               count += 1
             end
+            targets['timestamp'] = post_timestamp
           end
           if count.positive?
             File.open(cached_outgoing, "w") { |f| YAML.dump(outgoing, f) }
