@@ -23,8 +23,19 @@ module Jekyll
         if File.exist?(cached_outgoing)
           outgoing = open(cached_outgoing) { |f| YAML.load(f) }
           outgoing.each do |source, targets|
+            post_timestamp.targets.delete("timestamp")
             targets.each do |target, response|
+              # should we throttle?
+              if response.is_a? Hash # Some docs have no date
+                timestamp = response['timestamp']
+                if timestamp && Jekyll::WebmentionIO.post_should_be_throttled?(target, post_timestamp, timestamp)
+                  Jekyll::WebmentionIO.log "info", "Throttling this post."
+                else
+                  response = false
+                end
+              end
               next unless response == false
+
               if target.index("//").zero?
                 target = "http:#{target}"
               end
@@ -37,7 +48,7 @@ module Jekyll
               rescue JSON::ParserError
                 response = ""
               end
-              outgoing[source][target] = response
+              outgoing[source][target] = {'timestamp' => Time.now, 'response' => response}
               count += 1
             end
           end

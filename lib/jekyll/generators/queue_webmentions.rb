@@ -51,7 +51,7 @@ module Jekyll
             end
           end
         else
-          webmentions[uri] = mentions
+          webmentions[uri] = mentions.merge('timestamp' => Time.now)
         end
       end
 
@@ -81,10 +81,10 @@ module Jekyll
       outgoing_webmentions = open(old_outgoing_file) { |f| YAML.load(f) }
       merged = {}
       outgoing_webmentions.each do |source_url, webmentions|
-        collection = {}
-        webmentions.each do |target_url|
+        collection = {'timestamp' => webmentions.delete('timestamp')}
+        webmentions.each do |target_url, target_response|
           collection[target_url] = if sent_webmentions.dig(source_url, target_url)
-                                     ""
+                                     target_response || ""
                                    else
                                      false
                                    end

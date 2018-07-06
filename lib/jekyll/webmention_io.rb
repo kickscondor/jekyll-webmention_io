@@ -162,12 +162,12 @@ module Jekyll
 
     # allowed throttles: last_week, last_month, last_year, older
     # allowed values:  daily, weekly, monthly, yearly, every X days|weeks|months|years
-    def self.post_should_be_throttled?(post, item_date, last_webmention_date)
+    def self.post_should_be_throttled?(title, item_date, last_webmention_date)
       throttles = @config.dig("throttle_lookups")
       if throttles && item_date && last_webmention_date
         age = get_timeframe_from_date(item_date)
         throttle = throttles.dig(age)
-        if throttle && Date.parse(last_webmention_date) >= get_date_from_string(throttle)
+        if throttle && last_webmention_date >= get_date_from_string(throttle)
           log "info", "Throttling #{post.data["title"]} (Only checking it #{throttle})"
           return true
         end
