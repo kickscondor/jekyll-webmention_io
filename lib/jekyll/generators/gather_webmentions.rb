@@ -27,6 +27,12 @@ module Jekyll
         return
       end
 
+      @rescan = @site.config.dig("webmentions", "rescan")
+      if @rescan
+        require 'microformats'
+        require 'sanitize'
+      end
+
       Jekyll::WebmentionIO.log "msg", "Beginning to gather webmentions of your posts. This may take a while."
 
       Jekyll::WebmentionIO.api_path = "mentions"
@@ -134,6 +140,17 @@ module Jekyll
                     end
 
       if response && response["links"]
+        # Rescan the source using the Microformats gem. This is papering
+        # over Webmention.io's sometimes odd 'content' area.
+        if @rescan and response['data']
+          begin
+            mf = Microformats.parse(response['source'])
+            response['data']['content'] = Sanitize.fragment(mf.entry.content.to_h[:html], Sanitize::Config::RELAXED)
+          rescue
+            Jekyll::WebmentionIO.log "info", "Could not rescan #{response['source']}"
+          end
+        end
+
         response["links"].reverse_each do |link|
           webmention = Jekyll::WebmentionIO::Webmention.new(link, @site)
 
