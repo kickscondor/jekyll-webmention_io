@@ -31,6 +31,7 @@ module Jekyll
       if @rescan
         require 'microformats'
         require 'sanitize'
+        @sanitize_config = Sanitize::Config::BASIC.merge(remove_contents: true)
       end
 
       Jekyll::WebmentionIO.log "msg", "Beginning to gather webmentions of your posts. This may take a while."
@@ -146,7 +147,7 @@ module Jekyll
           if @rescan and link['data']
             begin
               mf = Microformats.parse(link['source'])
-              link['data']['content'] = Sanitize.fragment(mf.entry.content.to_h[:html], Sanitize::Config::RELAXED)
+              link['data']['content'] = Sanitize.fragment(mf.entry.content.to_h[:html], @sanitize_config)
             rescue
               Jekyll::WebmentionIO.log "info", "Could not rescan #{link['source']}"
             end
