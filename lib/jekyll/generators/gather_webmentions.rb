@@ -32,14 +32,14 @@ module Jekyll
         require 'microformats'
         require 'sanitize'
         @sanitize_config = Sanitize::Config.merge(Sanitize::Config::BASIC,
-          protocols: {'a' => {'href' => ['dat']}},
+         {protocols: {'a' => {'href' => ['dat']}},
           remove_contents: true,
           transformers: lambda {|env|
             # Remove empty elements
             node = env[:node]
             return unless node.elem?
             node.unlink unless node.content.strip.length > 0
-          )
+         })
       end
 
       Jekyll::WebmentionIO.log "msg", "Beginning to gather webmentions of your posts. This may take a while."
