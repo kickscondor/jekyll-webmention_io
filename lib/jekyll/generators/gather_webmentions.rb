@@ -32,6 +32,8 @@ module Jekyll
         require 'microformats'
         require 'sanitize'
         @sanitize_config = Sanitize::Config::BASIC.merge(
+          elements: ['span'],
+          protocols: {'a' => {'href' => ['dat']}},
           remove_contents: true,
           transformers: lambda {|env|
             # Remove empty elements
