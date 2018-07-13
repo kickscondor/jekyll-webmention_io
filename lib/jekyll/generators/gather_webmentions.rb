@@ -33,17 +33,15 @@ module Jekyll
         require 'sanitize'
         @sanitize_config = Sanitize::Config::BASIC.merge(
           remove_contents: true,
-          transformers: [
+          transformers: lambda {|env|
             # Remove empty elements
-	    proc {|env|
-	      node = env[:node]
-	      return unless node.elem?
+            node = env[:node]
+            return unless node.elem?
 
-	      unless node.children.any?{|c| !c.text? || c.content.strip.length > 0 }
-		node.unlink
-	      end
-	    }
-          ])
+            unless node.children.any?{|c| !c.text? || c.content.strip.length > 0 }
+              node.unlink
+            end
+          })
       end
 
       Jekyll::WebmentionIO.log "msg", "Beginning to gather webmentions of your posts. This may take a while."
