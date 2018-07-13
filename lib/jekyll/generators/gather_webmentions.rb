@@ -37,10 +37,7 @@ module Jekyll
             # Remove empty elements
             node = env[:node]
             return unless node.elem?
-
-            unless node.children.any?{|c| !c.text? || c.content.strip.length > 0 }
-              node.unlink
-            end
+            node.unlink unless node.content.strip.length > 0
           })
       end
 
