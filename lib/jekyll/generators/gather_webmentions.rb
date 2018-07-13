@@ -31,7 +31,7 @@ module Jekyll
       if @rescan
         require 'microformats'
         require 'sanitize'
-        @sanitize_config = Sanitize::Config::BASIC.merge(
+        @sanitize_config = Sanitize::Config.merge(Sanitize::Config::BASIC,
           protocols: {'a' => {'href' => ['dat']}},
           remove_contents: true,
           transformers: lambda {|env|
@@ -39,7 +39,7 @@ module Jekyll
             node = env[:node]
             return unless node.elem?
             node.unlink unless node.content.strip.length > 0
-          })
+          )
       end
 
       Jekyll::WebmentionIO.log "msg", "Beginning to gather webmentions of your posts. This may take a while."
