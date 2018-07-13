@@ -140,18 +140,18 @@ module Jekyll
                     end
 
       if response && response["links"]
-        # Rescan the source using the Microformats gem. This is papering
-        # over Webmention.io's sometimes odd 'content' area.
-        if @rescan and response['data']
-          begin
-            mf = Microformats.parse(response['source'])
-            response['data']['content'] = Sanitize.fragment(mf.entry.content.to_h[:html], Sanitize::Config::RELAXED)
-          rescue
-            Jekyll::WebmentionIO.log "info", "Could not rescan #{response['source']}"
-          end
-        end
-
         response["links"].reverse_each do |link|
+          # Rescan the source using the Microformats gem. This is papering
+          # over Webmention.io's sometimes odd 'content' area.
+          if @rescan and link['data']
+            begin
+              mf = Microformats.parse(link['source'])
+              link['data']['content'] = Sanitize.fragment(mf.entry.content.to_h[:html], Sanitize::Config::RELAXED)
+            rescue
+              Jekyll::WebmentionIO.log "info", "Could not rescan #{link['source']}"
+            end
+          end
+
           webmention = Jekyll::WebmentionIO::Webmention.new(link, @site)
 
           # Do we already have it?
