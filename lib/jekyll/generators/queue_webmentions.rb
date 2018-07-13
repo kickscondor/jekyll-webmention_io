@@ -66,18 +66,16 @@ module Jekyll
 
     def get_mentioned_uris(post)
       uris = {}
-      (@site.config.dig("webmentions", "link_fields") || ['in_reply_to']).
-        to_a.each do |k|
-          v = post.data[k]
-          if v
-            v.to_a.each do |d|
-              uris[d] = false if d.match(URI_RE)
-            end
+      data = (@site.config.dig("webmentions", "link_fields") || ['in_reply_to']).
+        map { |k| post.data[k] }
+      data << post.content
+
+      data.each do |d|
+        next unless d
+        d.to_s.scan(URI_RE) do |match|
+          unless uris.key? match
+            uris[match] = false
           end
-        end
-      post.content.scan(URI_RE) do |match|
-        unless uris.key? match
-          uris[match] = false
         end
       end
       return uris
