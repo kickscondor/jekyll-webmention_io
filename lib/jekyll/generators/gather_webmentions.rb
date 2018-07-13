@@ -31,8 +31,8 @@ module Jekyll
       if @rescan
         require 'microformats'
         require 'sanitize'
-        @sanitize_config = Sanitize::Config.merge(Sanitize::Config::BASIC,
-          protocols: {'a' => {'href' => ['dat']}},
+        @sanitize_config = Sanitize::Config::BASIC.merge(
+          protocols: {'a' => {'href' => ['ftp', 'http', 'https', 'mailto', 'dat', :relative]}},
           remove_contents: true,
           transformers: lambda {|env|
             # Remove empty elements
