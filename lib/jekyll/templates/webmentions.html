@@ -37,9 +37,9 @@
                 <time class="webmention__pubdate dt-published"
                       datetime="{{ webmention.pubdate | date: '%FT%T%:z' }}">{{ webmention.pubdate | date: '%d %B %Y' }}</time>
               {% endif %}
-              {% if webmention.pubdate and webmention.uri %}|{% endif %}
-              {% if webmention.uri %}
-                <a class="webmention__source u-url" href="{{ webmention.uri }}">Permalink</a>
+              {% if webmention.pubdate and webmention.source %}|{% endif %}
+              {% if webmention.source %}
+                <a class="webmention__source u-url" href="{{ webmention.source }}">Permalink</a>
               {% endif %}
             </div>
           </article>
