@@ -147,7 +147,8 @@ module Jekyll
           if @rescan and link['data']
             begin
               mf = Microformats.parse(link['source'])
-              link['data']['content'] = Sanitize.fragment(mf.entry.content.to_h[:html], @sanitize_config)
+              link['data']['content'] = Sanitize.fragment(mf.entry.content.to_h[:html], @sanitize_config).
+                gsub(/^\s+/, '')
             rescue
               Jekyll::WebmentionIO.log "info", "Could not rescan #{link['source']}"
             end
