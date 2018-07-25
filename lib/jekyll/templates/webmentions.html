@@ -1,10 +1,11 @@
 {% capture webmention_types %}{{ types | join: ',' }}{% endcapture %}
+<a name="comments"></a>
 <div class="webmentions"{% unless webmention_types=="" %} data-webmention-types="{{ webmention_types }}"{% endunless %}>
   {% if webmentions.size > 0 %}
     <ol class="webmentions__list">
       {% for webmention in webmentions %}
         <li id="webmention-{{ webmention.id }}" class="webmentions__item">
-          <article class="h-cite webmention webmention--{{ webmention.type }}
+          <article class="u-comment h-cite webmention webmention--{{ webmention.type }}
             {% unless webmention.author %}webmention--no-author{% endunless %}
             {% unless webmention.author.photo %}webmention--no-photo{% endunless %}
             {% if webmention.source=='twitter' %}{% if webmention.type=='like' or webmention.type=='repost' %}webmention--author-starts{% endif %}{% endif %}
