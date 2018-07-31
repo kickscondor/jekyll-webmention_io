@@ -94,6 +94,7 @@ module Jekyll
 
           webmentions = sort_webmentions(webmentions)
           set_data(webmentions, types)
+          @data["url"] = uri
         end
 
         render_into_template
