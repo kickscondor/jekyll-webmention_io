@@ -68,7 +68,12 @@ module Jekyll
       uris = {}
       data = (@site.config.dig("webmentions", "link_fields") || ['in_reply_to']).
         map { |k| post.data[k] }
-      data << post.content
+      c = post.content
+      block_urls = @site.config.dig("webmentions", "block_urls_in_content")
+      if block_urls
+        c.gsub!(/(?:https?:)?\/\/(?:#{block_urls.map { |x| Regexp.quote(x) }.join('|')})/, '')
+      end
+      data << c
 
       data.each do |d|
         next unless d
