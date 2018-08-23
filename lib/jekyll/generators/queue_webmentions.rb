@@ -71,7 +71,7 @@ module Jekyll
       c = post.content
       block_urls = @site.config.dig("webmentions", "block_urls_in_content")
       if block_urls
-        c.gsub!(/(?:https?:)?\/\/(?:#{block_urls.map { |x| Regexp.quote(x) }.join('|')})/, '')
+        c = c.gsub(/(?:https?:)?\/\/(?:#{block_urls.map { |x| Regexp.quote(x) }.join('|')})/, '')
       end
       data << c
 
