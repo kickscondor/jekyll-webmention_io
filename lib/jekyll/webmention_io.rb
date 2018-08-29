@@ -199,7 +199,7 @@ module Jekyll
     # supported: now, daily, weekly, monthly, yearly, every X days|weeks|months|years
     def self.get_date_from_string(text)
       today = Date.today
-      return today if text == "now"
+      return today + 1 if text == "now"
       pattern = /every\s(?:(\d+)\s)?(day|week|month|year)s?/
       matches = text.match(pattern)
       unless matches
