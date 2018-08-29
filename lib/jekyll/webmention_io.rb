@@ -160,8 +160,8 @@ module Jekyll
       end
     end
 
-    # allowed throttles: last_week, last_month, last_year, older
-    # allowed values:  daily, weekly, monthly, yearly, every X days|weeks|months|years
+    # allowed throttles: last_day, last_week, last_month, last_year, older
+    # allowed values: now, daily, weekly, monthly, yearly, every X days|weeks|months|years
     def self.post_should_be_throttled?(title, item_date, last_webmention_date)
       throttles = @config.dig("throttle_lookups")
       if throttles && item_date && last_webmention_date
@@ -178,6 +178,7 @@ module Jekyll
     def self.get_timeframe_from_date(time)
       date = time.to_date
       timeframes = {
+        "last_day" => "daily",
         "last_week"  => "weekly",
         "last_month" => "monthly",
         "last_year"  => "yearly",
@@ -195,9 +196,10 @@ module Jekyll
       return timeframe
     end
 
-    # supported: daily, weekly, monthly, yearly, every X days|weeks|months|years
+    # supported: now, daily, weekly, monthly, yearly, every X days|weeks|months|years
     def self.get_date_from_string(text)
       today = Date.today
+      return today if text == "now"
       pattern = /every\s(?:(\d+)\s)?(day|week|month|year)s?/
       matches = text.match(pattern)
       unless matches
